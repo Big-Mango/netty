@@ -1,4 +1,4 @@
-package com.example.ssl;
+package com.example.sslSorket;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
