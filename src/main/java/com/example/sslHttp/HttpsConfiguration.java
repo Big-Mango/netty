@@ -18,7 +18,6 @@ public class HttpsConfiguration {
     @Value("${server.port}")
     Integer httpsPort;
 
-    // springboot2 写法
     @Bean
     public TomcatServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
