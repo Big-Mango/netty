@@ -1,5 +1,7 @@
 package com.example.sslHttp;
 
+import sun.net.www.protocol.https.DefaultHostnameVerifier;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,13 +11,9 @@ import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
 
-    public class HttpPost {
+public class HttpPost {
         /**
          * 获得KeyStore.
          * @param keyStorePath
@@ -90,7 +88,7 @@ import javax.net.ssl.TrustManagerFactory;
             // 声明SSL上下文
             SSLContext sslContext = null;
             // 实例化主机名验证接口
-          //  HostnameVerifier hnv = new HostnameVerifier();
+            HostnameVerifier hnv = new DefaultHostnameVerifier();
             try {
                 sslContext = getSSLContext(password, keyStorePath, trustStorePath);
             } catch (GeneralSecurityException e) {
@@ -100,7 +98,7 @@ import javax.net.ssl.TrustManagerFactory;
                 HttpsURLConnection.setDefaultSSLSocketFactory(sslContext
                         .getSocketFactory());
             }
-           // HttpsURLConnection.setDefaultHostnameVerifier(hnv);
+            HttpsURLConnection.setDefaultHostnameVerifier(hnv);
         }
 
         /**
@@ -120,8 +118,9 @@ import javax.net.ssl.TrustManagerFactory;
                 urlCon.setRequestProperty("Content-Length",
                         String.valueOf(xmlStr.getBytes().length));
                 urlCon.setUseCaches(false);
+                urlCon.setHostnameVerifier(new HttpPost().new TrustAnyHostnameVerifier());
                 //设置为gbk可以解决服务器接收时读取的数据中文乱码问题
-                urlCon.getOutputStream().write(xmlStr.getBytes("gbk"));
+                urlCon.getOutputStream().write(xmlStr.getBytes("UTF-8"));
                 urlCon.getOutputStream().flush();
                 urlCon.getOutputStream().close();
                 BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -139,6 +138,13 @@ import javax.net.ssl.TrustManagerFactory;
             }
         }
 
+        public class TrustAnyHostnameVerifier implements HostnameVerifier {
+            public boolean verify(String hostname, SSLSession session) {
+                // 直接返回true
+                return true;
+            }
+        }
+
         /**
          * 测试方法.
          * @param args
@@ -146,13 +152,13 @@ import javax.net.ssl.TrustManagerFactory;
          */
         public static void main(String[] args) throws Exception {
             // 密码
-            String password = "123456";
+            String password = "111111";
             // 密钥库
-            String keyStorePath = "tomcat.keystore";
+            String keyStorePath = "/Users/liuxiangyu/kserver1.keystore";
             // 信任库
-            String trustStorePath = "tomcat.keystore";
+            String trustStorePath = "/Users/liuxiangyu/tserver1.keystore";
             // 本地起的https服务
-            String httpsUrl = "https://localhost:8443/service/httpsPost";
+            String httpsUrl = "https://127.0.0.1:8080/doPost";
             // 传输文本
             String xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><fruitShop><fruits><fruit><kind>萝卜</kind></fruit><fruit><kind>菠萝</kind></fruit></fruits></fruitShop>";
             HttpPost.initHttpsURLConnection(password, keyStorePath, trustStorePath);

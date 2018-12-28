@@ -60,6 +60,8 @@ public class server extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doGet(req, resp);
     }
+
+
     private boolean verifyCertificate(X509Certificate certificate) {
         boolean valid = false;
         try {
@@ -73,7 +75,7 @@ public class server extends HttpServlet {
 
     @RequestMapping("/hello")
     @ResponseBody
-    String home() {
+    String hello() {
         return "Hello ,spring boot!";
     }
 
