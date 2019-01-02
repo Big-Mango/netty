@@ -120,7 +120,7 @@ public class HttpPost {
                 urlCon.setUseCaches(false);
                 urlCon.setHostnameVerifier(new HttpPost().new TrustAnyHostnameVerifier());
                 //设置为gbk可以解决服务器接收时读取的数据中文乱码问题
-                urlCon.getOutputStream().write(xmlStr.getBytes("UTF-8"));
+                urlCon.getOutputStream().write(xmlStr.getBytes("gbk"));
                 urlCon.getOutputStream().flush();
                 urlCon.getOutputStream().close();
                 BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -131,9 +131,7 @@ public class HttpPost {
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
+            }  catch (Exception e) {
                 e.printStackTrace();
             }
         }
